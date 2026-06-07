@@ -86,9 +86,11 @@ export default function MovieCard({ movie }: Props) {
             </span>
           ))}
         </div>
-        {movie.year && (
+        {movie.isSeries && movie.seasons ? (
+          <p className="text-[9px] text-[#9A8A78] mt-auto leading-tight">{movie.seasons}</p>
+        ) : movie.year ? (
           <p className="text-[9px] text-[#9A8A78] mt-auto">{movie.year}</p>
-        )}
+        ) : null}
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 'use client';
 
-import type { Filters, RatingFilter } from '@/types';
+import type { Filters, RatingFilter, Section } from '@/types';
 
 const RATINGS: RatingFilter[] = ['ALL', 'G', 'PG', 'M', 'MA15+'];
 
@@ -19,6 +19,12 @@ const RATING_ACTIVE: Record<string, string> = {
   M:       'border-[#B87420] bg-[#B87420] text-white',
   'MA15+': 'border-[#A02828] bg-[#A02828] text-white',
 };
+
+const SECTIONS: { value: Section; label: string }[] = [
+  { value: 'movies', label: 'Films' },
+  { value: 'kids',   label: 'Kids' },
+  { value: 'series', label: 'Series' },
+];
 
 interface Props {
   filters: Filters;
@@ -59,26 +65,23 @@ export default function FilterBar({ filters, genres, totalCount, filteredCount, 
           Section
         </label>
         <div className="flex border border-[#D4C8B8] overflow-hidden">
-          <button
-            onClick={() => onChange({ kidsOnly: false })}
-            className={`flex-1 py-2 text-[10px] font-semibold uppercase tracking-brand transition-colors ${
-              !filters.kidsOnly
-                ? 'bg-[#152740] text-[#BF9840]'
-                : 'bg-white text-[#9A8A78] hover:text-[#152740]'
-            }`}
-          >
-            All Films
-          </button>
-          <button
-            onClick={() => onChange({ kidsOnly: true })}
-            className={`flex-1 py-2 text-[10px] font-semibold uppercase tracking-brand transition-colors ${
-              filters.kidsOnly
-                ? 'bg-[#6680A8] text-white'
-                : 'bg-white text-[#9A8A78] hover:text-[#152740]'
-            }`}
-          >
-            Kids
-          </button>
+          {SECTIONS.map(({ value, label }) => (
+            <button
+              key={value}
+              onClick={() => onChange({ section: value })}
+              className={`flex-1 py-2 text-[10px] font-semibold uppercase tracking-brand transition-colors ${
+                filters.section === value
+                  ? value === 'kids'
+                    ? 'bg-[#6680A8] text-white'
+                    : value === 'series'
+                    ? 'bg-[#7A6040] text-white'
+                    : 'bg-[#152740] text-[#BF9840]'
+                  : 'bg-white text-[#9A8A78] hover:text-[#152740]'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
         </div>
       </div>
 

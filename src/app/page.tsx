@@ -19,15 +19,19 @@ export default function Home() {
     search: '',
     genre: '',
     rating: 'ALL',
-    kidsOnly: false,
+    section: 'movies',
   });
 
-  const genres = useMemo(() => getAllGenres(ALL_MOVIES), []);
+  const sectionMovies = useMemo(() => {
+    if (filters.section === 'kids')   return ALL_MOVIES.filter((m) => m.isKids && !m.isSeries);
+    if (filters.section === 'series') return ALL_MOVIES.filter((m) => m.isSeries);
+    return ALL_MOVIES.filter((m) => !m.isKids && !m.isSeries);
+  }, [filters.section]);
+
+  const genres = useMemo(() => getAllGenres(sectionMovies), [sectionMovies]);
 
   const filtered = useMemo(() => {
-    return ALL_MOVIES.filter((m) => {
-      if (filters.kidsOnly && !m.isKids) return false;
-      if (!filters.kidsOnly && m.isKids) return false;
+    return sectionMovies.filter((m) => {
       if (filters.rating !== 'ALL' && m.rating !== filters.rating) return false;
       if (filters.genre && !m.genres.includes(filters.genre)) return false;
       if (filters.search) {
@@ -36,19 +40,22 @@ export default function Home() {
       }
       return true;
     });
-  }, [filters]);
+  }, [sectionMovies, filters]);
 
   function handleChange(partial: Partial<Filters>) {
     setFilters((prev) => ({ ...prev, ...partial }));
   }
 
+  const sectionHeading =
+    filters.section === 'kids'   ? 'Kids Movies' :
+    filters.section === 'series' ? 'TV Series'   : 'All Films';
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#EDE8DC' }}>
 
-      {/* Header — matches Breathtaker nav style */}
+      {/* Header */}
       <header className="topo-bg border-b border-[#D4C8B8] sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 flex items-center justify-between gap-4">
-          {/* Logo */}
           <div className="text-center sm:text-left">
             <h1
               className="text-xl sm:text-2xl font-semibold text-[#152740] tracking-wide-brand uppercase"
@@ -60,16 +67,12 @@ export default function Home() {
               Hotel &amp; Spa · DVD Library
             </p>
           </div>
-
-          {/* Right tag */}
           <p className="hidden sm:block text-[10px] text-[#9A8A78] text-right leading-relaxed uppercase tracking-wide">
             Complimentary for in-house guests
             <br />
             <span className="text-[#BF9840]">Dial reception ext. 1000</span>
           </p>
         </div>
-
-        {/* Navy accent bar — like their CTA bar */}
         <div className="bg-[#152740] py-2 px-4 sm:px-6">
           <p className="max-w-7xl mx-auto text-[10px] text-[#BF9840] uppercase tracking-brand text-center sm:text-left">
             Browse our collection · Available from reception
@@ -84,21 +87,20 @@ export default function Home() {
           <FilterBar
             filters={filters}
             genres={genres}
-            totalCount={ALL_MOVIES.filter((m) => filters.kidsOnly ? m.isKids : !m.isKids).length}
+            totalCount={sectionMovies.length}
             filteredCount={filtered.length}
             onChange={handleChange}
           />
 
           {/* Grid area */}
           <div className="flex-1 min-w-0">
-            {/* Section heading */}
             <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#D4C8B8]">
               <div>
                 <h2
                   className="text-2xl font-semibold text-[#152740] uppercase tracking-wide-brand"
                   style={{ fontFamily: 'var(--font-cormorant), serif' }}
                 >
-                  {filters.kidsOnly ? 'Kids Movies' : 'All Films'}
+                  {sectionHeading}
                 </h2>
                 {filters.genre && (
                   <p className="text-[10px] text-[#BF9840] uppercase tracking-brand mt-1">
@@ -108,7 +110,7 @@ export default function Home() {
               </div>
               {(filters.search || filters.genre || filters.rating !== 'ALL') && (
                 <button
-                  onClick={() => setFilters({ search: '', genre: '', rating: 'ALL', kidsOnly: filters.kidsOnly })}
+                  onClick={() => setFilters((prev) => ({ ...prev, search: '', genre: '', rating: 'ALL' }))}
                   className="text-[10px] text-[#9A8A78] hover:text-[#BF9840] uppercase tracking-brand underline underline-offset-2 transition-colors"
                 >
                   Clear filters
@@ -123,7 +125,7 @@ export default function Home() {
                 </svg>
                 <p className="text-[#9A8A78] text-sm uppercase tracking-brand">No titles match your filters</p>
                 <button
-                  onClick={() => setFilters({ search: '', genre: '', rating: 'ALL', kidsOnly: filters.kidsOnly })}
+                  onClick={() => setFilters((prev) => ({ ...prev, search: '', genre: '', rating: 'ALL' }))}
                   className="mt-3 text-[10px] text-[#BF9840] uppercase tracking-brand hover:underline"
                 >
                   Clear filters
@@ -140,7 +142,7 @@ export default function Home() {
         </div>
       </main>
 
-      {/* Footer — matches Breathtaker footer style */}
+      {/* Footer */}
       <footer className="bg-[#152740] mt-16 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
           <p
@@ -154,6 +156,13 @@ export default function Home() {
           </p>
           <p className="text-[10px] text-[#9A8A78] mt-3 italic" style={{ fontFamily: 'var(--font-cormorant), serif' }}>
             &ldquo;Nothing great in the world has ever been accomplished without passion.&rdquo;
+          </p>
+          <p className="text-[9px] text-[#4A5568] mt-4 uppercase tracking-brand">
+            Created by{' '}
+            <a href="https://creative-milk.com.au" target="_blank" rel="noopener noreferrer"
+              className="hover:text-[#BF9840] transition-colors">
+              creative-milk.com.au
+            </a>
           </p>
         </div>
       </footer>
