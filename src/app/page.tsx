@@ -42,55 +42,74 @@ export default function Home() {
     setFilters((prev) => ({ ...prev, ...partial }));
   }
 
-  const sectionLabel = filters.kidsOnly ? 'Kids Movies' : 'All Films';
-
   return (
-    <div className="min-h-screen bg-[#0D1117]">
-      {/* Header */}
-      <header className="border-b border-[#30363D] bg-[#0D1117]/95 backdrop-blur sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
-          <div>
-            <h1 className="text-lg sm:text-xl font-bold text-[#E6EDF3] tracking-tight">
-              Breathtaker Hotel Spa
+    <div className="min-h-screen" style={{ backgroundColor: '#EDE8DC' }}>
+
+      {/* Header — matches Breathtaker nav style */}
+      <header className="topo-bg border-b border-[#D4C8B8] sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 flex items-center justify-between gap-4">
+          {/* Logo */}
+          <div className="text-center sm:text-left">
+            <h1
+              className="text-xl sm:text-2xl font-semibold text-[#152740] tracking-wide-brand uppercase"
+              style={{ fontFamily: 'var(--font-cormorant), serif' }}
+            >
+              Breathtaker
             </h1>
-            <p className="text-xs text-[#D4AF37] tracking-widest uppercase font-medium mt-0.5">
-              DVD Library
+            <p className="text-[9px] font-medium text-[#7A6040] tracking-brand uppercase mt-0.5">
+              Hotel &amp; Spa · DVD Library
             </p>
           </div>
-          <p className="hidden sm:block text-xs text-[#8B949E] text-right max-w-[200px] leading-relaxed">
-            Complimentary for in-house guests.
+
+          {/* Right tag */}
+          <p className="hidden sm:block text-[10px] text-[#9A8A78] text-right leading-relaxed uppercase tracking-wide">
+            Complimentary for in-house guests
             <br />
-            Dial reception ext. 1000.
+            <span className="text-[#BF9840]">Dial reception ext. 1000</span>
+          </p>
+        </div>
+
+        {/* Navy accent bar — like their CTA bar */}
+        <div className="bg-[#152740] py-2 px-4 sm:px-6">
+          <p className="max-w-7xl mx-auto text-[10px] text-[#BF9840] uppercase tracking-brand text-center sm:text-left">
+            Browse our collection · Available from reception
           </p>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
-        <div className="flex flex-col lg:flex-row gap-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+        <div className="flex flex-col lg:flex-row gap-10">
+
           {/* Sidebar */}
           <FilterBar
             filters={filters}
             genres={genres}
-            totalCount={ALL_MOVIES.filter((m) =>
-              filters.kidsOnly ? m.isKids : !m.isKids
-            ).length}
+            totalCount={ALL_MOVIES.filter((m) => filters.kidsOnly ? m.isKids : !m.isKids).length}
             filteredCount={filtered.length}
             onChange={handleChange}
           />
 
-          {/* Grid */}
+          {/* Grid area */}
           <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-sm font-semibold text-[#E6EDF3]">
-                {sectionLabel}
+            {/* Section heading */}
+            <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#D4C8B8]">
+              <div>
+                <h2
+                  className="text-2xl font-semibold text-[#152740] uppercase tracking-wide-brand"
+                  style={{ fontFamily: 'var(--font-cormorant), serif' }}
+                >
+                  {filters.kidsOnly ? 'Kids Movies' : 'All Films'}
+                </h2>
                 {filters.genre && (
-                  <span className="ml-2 text-[#D4AF37]">· {filters.genre}</span>
+                  <p className="text-[10px] text-[#BF9840] uppercase tracking-brand mt-1">
+                    {filters.genre}
+                  </p>
                 )}
-              </h2>
+              </div>
               {(filters.search || filters.genre || filters.rating !== 'ALL') && (
                 <button
                   onClick={() => setFilters({ search: '', genre: '', rating: 'ALL', kidsOnly: filters.kidsOnly })}
-                  className="text-xs text-[#8B949E] hover:text-[#D4AF37] transition-colors underline underline-offset-2"
+                  className="text-[10px] text-[#9A8A78] hover:text-[#BF9840] uppercase tracking-brand underline underline-offset-2 transition-colors"
                 >
                   Clear filters
                 </button>
@@ -99,11 +118,13 @@ export default function Home() {
 
             {filtered.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-24 text-center">
-                <div className="text-5xl mb-4 opacity-30">🎬</div>
-                <p className="text-[#8B949E] text-sm">No movies match your filters.</p>
+                <svg className="w-12 h-12 text-[#D4C8B8] mb-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zm0 2v12h16V6H4zm2 2h2v2H6V8zm0 4h2v2H6v-2zm4-4h6v2h-6V8zm0 4h6v2h-6v-2z"/>
+                </svg>
+                <p className="text-[#9A8A78] text-sm uppercase tracking-brand">No titles match your filters</p>
                 <button
                   onClick={() => setFilters({ search: '', genre: '', rating: 'ALL', kidsOnly: filters.kidsOnly })}
-                  className="mt-3 text-xs text-[#D4AF37] hover:underline"
+                  className="mt-3 text-[10px] text-[#BF9840] uppercase tracking-brand hover:underline"
                 >
                   Clear filters
                 </button>
@@ -119,8 +140,22 @@ export default function Home() {
         </div>
       </main>
 
-      <footer className="border-t border-[#30363D] mt-12 py-6 text-center text-[10px] text-[#8B949E]">
-        Breathtaker Hotel Spa — DVD Library · For in-house guests only
+      {/* Footer — matches Breathtaker footer style */}
+      <footer className="bg-[#152740] mt-16 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
+          <p
+            className="text-lg font-medium text-[#BF9840] tracking-wide-brand uppercase mb-1"
+            style={{ fontFamily: 'var(--font-cormorant), serif' }}
+          >
+            Breathtaker Hotel &amp; Spa
+          </p>
+          <p className="text-[10px] text-[#6680A8] uppercase tracking-brand">
+            Mount Buller · DVD Library · For in-house guests only
+          </p>
+          <p className="text-[10px] text-[#9A8A78] mt-3 italic" style={{ fontFamily: 'var(--font-cormorant), serif' }}>
+            &ldquo;Nothing great in the world has ever been accomplished without passion.&rdquo;
+          </p>
+        </div>
       </footer>
     </div>
   );

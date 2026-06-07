@@ -5,15 +5,13 @@ import Image from 'next/image';
 import type { Movie } from '@/types';
 
 const RATING_STYLES: Record<string, string> = {
-  'G':     'bg-green-700 text-green-100',
-  'PG':    'bg-blue-700 text-blue-100',
-  'M':     'bg-amber-600 text-amber-100',
-  'MA15+': 'bg-red-700 text-red-100',
+  'G':     'bg-[#2D6A2D] text-white',
+  'PG':    'bg-[#1F5FAB] text-white',
+  'M':     'bg-[#B87420] text-white',
+  'MA15+': 'bg-[#A02828] text-white',
 };
 
-interface Props {
-  movie: Movie;
-}
+interface Props { movie: Movie }
 
 export default function MovieCard({ movie }: Props) {
   const [posterUrl, setPosterUrl] = useState<string | null>(null);
@@ -27,20 +25,18 @@ export default function MovieCard({ movie }: Props) {
 
     fetch(`/api/poster?${params}`)
       .then((r) => r.json())
-      .then((data) => {
-        if (!cancelled) setPosterUrl(data.posterUrl ?? null);
-      })
+      .then((data) => { if (!cancelled) setPosterUrl(data.posterUrl ?? null); })
       .catch(() => { if (!cancelled) setError(true); });
 
     return () => { cancelled = true; };
   }, [movie.title, movie.year]);
 
-  const ratingClass = RATING_STYLES[movie.rating] ?? 'bg-zinc-600 text-zinc-100';
+  const ratingClass = RATING_STYLES[movie.rating] ?? 'bg-[#6680A8] text-white';
 
   return (
-    <div className="group relative flex flex-col rounded-lg overflow-hidden bg-[#161B22] border border-[#30363D] hover:border-[#D4AF37]/50 transition-all duration-200 hover:shadow-lg hover:shadow-[#D4AF37]/10 hover:-translate-y-0.5">
-      {/* Poster area */}
-      <div className="relative w-full aspect-[2/3] bg-[#0D1117] flex-shrink-0">
+    <div className="group relative flex flex-col bg-white border border-[#D4C8B8] hover:border-[#BF9840] hover:shadow-lg hover:shadow-[#BF9840]/15 hover:-translate-y-0.5 transition-all duration-200 rounded-sm overflow-hidden">
+      {/* Poster */}
+      <div className="relative w-full aspect-[2/3] bg-[#EDE8DC] flex-shrink-0 overflow-hidden">
         {posterUrl && !error ? (
           <Image
             src={posterUrl}
@@ -53,43 +49,45 @@ export default function MovieCard({ movie }: Props) {
           />
         ) : null}
 
-        {/* Placeholder shown until poster loads or on error */}
+        {/* Placeholder */}
         {(!posterUrl || !loaded || error) && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 p-3 text-center">
-            <div className="text-4xl opacity-20">🎬</div>
-            <p className="text-[10px] text-[#8B949E] font-medium leading-tight line-clamp-3">
+            <svg className="w-8 h-8 text-[#D4C8B8]" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zm0 2v12h16V6H4zm2 2h2v2H6V8zm0 4h2v2H6v-2zm4-4h6v2h-6V8zm0 4h6v2h-6v-2z"/>
+            </svg>
+            <p className="text-[9px] text-[#9A8A78] font-medium leading-tight line-clamp-3 tracking-wide uppercase">
               {movie.title}
             </p>
           </div>
         )}
 
         {/* Rating badge */}
-        <span className={`absolute top-2 left-2 text-[10px] font-bold px-1.5 py-0.5 rounded ${ratingClass}`}>
+        <span className={`absolute top-2 left-2 text-[9px] font-bold px-1.5 py-0.5 tracking-wide uppercase ${ratingClass}`}>
           {movie.rating}
         </span>
 
         {/* Kids badge */}
         {movie.isKids && (
-          <span className="absolute top-2 right-2 text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-700 text-purple-100">
-            KIDS
+          <span className="absolute top-2 right-2 text-[9px] font-bold px-1.5 py-0.5 bg-[#6680A8] text-white uppercase tracking-wide">
+            Kids
           </span>
         )}
       </div>
 
       {/* Info */}
-      <div className="p-2.5 flex flex-col gap-1 flex-1">
-        <h3 className="text-xs font-semibold text-[#E6EDF3] leading-tight line-clamp-2 group-hover:text-[#D4AF37] transition-colors">
+      <div className="p-2.5 flex flex-col gap-1.5 flex-1 bg-white">
+        <h3 className="text-[11px] font-semibold text-[#152740] leading-tight line-clamp-2 group-hover:text-[#BF9840] transition-colors tracking-wide uppercase">
           {movie.title}
         </h3>
-        <div className="flex flex-wrap gap-1 mt-auto pt-1">
+        <div className="flex flex-wrap gap-1">
           {movie.genres.slice(0, 2).map((g) => (
-            <span key={g} className="text-[9px] px-1.5 py-0.5 rounded bg-[#30363D] text-[#8B949E]">
+            <span key={g} className="text-[8px] px-1.5 py-0.5 border border-[#D4C8B8] text-[#9A8A78] uppercase tracking-wide">
               {g}
             </span>
           ))}
         </div>
         {movie.year && (
-          <p className="text-[9px] text-[#8B949E] mt-0.5">{movie.year}</p>
+          <p className="text-[9px] text-[#9A8A78] mt-auto">{movie.year}</p>
         )}
       </div>
     </div>

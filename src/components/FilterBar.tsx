@@ -4,20 +4,20 @@ import type { Filters, RatingFilter } from '@/types';
 
 const RATINGS: RatingFilter[] = ['ALL', 'G', 'PG', 'M', 'MA15+'];
 
-const RATING_STYLES: Record<string, string> = {
-  ALL:     'bg-[#30363D] text-[#E6EDF3] hover:bg-[#444C56]',
-  G:       'bg-green-800 text-green-100 hover:bg-green-700',
-  PG:      'bg-blue-800 text-blue-100 hover:bg-blue-700',
-  M:       'bg-amber-800 text-amber-100 hover:bg-amber-700',
-  'MA15+': 'bg-red-800 text-red-100 hover:bg-red-700',
+const RATING_BADGE: Record<string, string> = {
+  ALL:     'border-[#D4C8B8] text-[#7A6040] hover:border-[#BF9840] hover:text-[#BF9840]',
+  G:       'border-[#2D6A2D] text-[#2D6A2D] hover:bg-[#2D6A2D] hover:text-white',
+  PG:      'border-[#1F5FAB] text-[#1F5FAB] hover:bg-[#1F5FAB] hover:text-white',
+  M:       'border-[#B87420] text-[#B87420] hover:bg-[#B87420] hover:text-white',
+  'MA15+': 'border-[#A02828] text-[#A02828] hover:bg-[#A02828] hover:text-white',
 };
 
-const ACTIVE_STYLES: Record<string, string> = {
-  ALL:     'ring-2 ring-[#D4AF37]',
-  G:       'ring-2 ring-green-400',
-  PG:      'ring-2 ring-blue-400',
-  M:       'ring-2 ring-amber-400',
-  'MA15+': 'ring-2 ring-red-400',
+const RATING_ACTIVE: Record<string, string> = {
+  ALL:     'border-[#BF9840] bg-[#BF9840] text-white',
+  G:       'border-[#2D6A2D] bg-[#2D6A2D] text-white',
+  PG:      'border-[#1F5FAB] bg-[#1F5FAB] text-white',
+  M:       'border-[#B87420] bg-[#B87420] text-white',
+  'MA15+': 'border-[#A02828] bg-[#A02828] text-white',
 };
 
 interface Props {
@@ -30,17 +30,16 @@ interface Props {
 
 export default function FilterBar({ filters, genres, totalCount, filteredCount, onChange }: Props) {
   return (
-    <aside className="flex flex-col gap-5 w-full lg:w-64 flex-shrink-0">
+    <aside className="flex flex-col gap-6 w-full lg:w-60 flex-shrink-0">
+
       {/* Search */}
       <div>
-        <label className="block text-xs font-semibold text-[#8B949E] uppercase tracking-wider mb-2">
+        <label className="block text-[10px] font-semibold text-[#9A8A78] uppercase tracking-brand mb-2">
           Search
         </label>
         <div className="relative">
-          <svg
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8B949E]"
-            fill="none" stroke="currentColor" viewBox="0 0 24 24"
-          >
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9A8A78]"
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
               d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
@@ -49,33 +48,33 @@ export default function FilterBar({ filters, genres, totalCount, filteredCount, 
             placeholder="Title..."
             value={filters.search}
             onChange={(e) => onChange({ search: e.target.value })}
-            className="w-full pl-9 pr-3 py-2 text-sm bg-[#161B22] border border-[#30363D] rounded-lg text-[#E6EDF3] placeholder-[#8B949E] focus:outline-none focus:border-[#D4AF37] transition-colors"
+            className="w-full pl-9 pr-3 py-2 text-xs bg-white border border-[#D4C8B8] text-[#152740] placeholder-[#9A8A78] focus:outline-none focus:border-[#BF9840] transition-colors tracking-wide"
           />
         </div>
       </div>
 
       {/* Section toggle */}
       <div>
-        <label className="block text-xs font-semibold text-[#8B949E] uppercase tracking-wider mb-2">
+        <label className="block text-[10px] font-semibold text-[#9A8A78] uppercase tracking-brand mb-2">
           Section
         </label>
-        <div className="flex rounded-lg overflow-hidden border border-[#30363D]">
+        <div className="flex border border-[#D4C8B8] overflow-hidden">
           <button
             onClick={() => onChange({ kidsOnly: false })}
-            className={`flex-1 py-2 text-xs font-semibold transition-colors ${
+            className={`flex-1 py-2 text-[10px] font-semibold uppercase tracking-brand transition-colors ${
               !filters.kidsOnly
-                ? 'bg-[#D4AF37] text-[#0D1117]'
-                : 'bg-[#161B22] text-[#8B949E] hover:text-[#E6EDF3]'
+                ? 'bg-[#152740] text-[#BF9840]'
+                : 'bg-white text-[#9A8A78] hover:text-[#152740]'
             }`}
           >
             All Films
           </button>
           <button
             onClick={() => onChange({ kidsOnly: true })}
-            className={`flex-1 py-2 text-xs font-semibold transition-colors ${
+            className={`flex-1 py-2 text-[10px] font-semibold uppercase tracking-brand transition-colors ${
               filters.kidsOnly
-                ? 'bg-purple-600 text-white'
-                : 'bg-[#161B22] text-[#8B949E] hover:text-[#E6EDF3]'
+                ? 'bg-[#6680A8] text-white'
+                : 'bg-white text-[#9A8A78] hover:text-[#152740]'
             }`}
           >
             Kids
@@ -85,16 +84,16 @@ export default function FilterBar({ filters, genres, totalCount, filteredCount, 
 
       {/* Rating */}
       <div>
-        <label className="block text-xs font-semibold text-[#8B949E] uppercase tracking-wider mb-2">
+        <label className="block text-[10px] font-semibold text-[#9A8A78] uppercase tracking-brand mb-2">
           Rating
         </label>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1.5">
           {RATINGS.map((r) => (
             <button
               key={r}
               onClick={() => onChange({ rating: r })}
-              className={`px-2.5 py-1 text-xs font-bold rounded transition-all ${RATING_STYLES[r]} ${
-                filters.rating === r ? ACTIVE_STYLES[r] : 'opacity-60'
+              className={`px-2.5 py-1 text-[9px] font-bold uppercase tracking-wide border transition-all ${
+                filters.rating === r ? RATING_ACTIVE[r] : RATING_BADGE[r]
               }`}
             >
               {r}
@@ -105,16 +104,16 @@ export default function FilterBar({ filters, genres, totalCount, filteredCount, 
 
       {/* Genre */}
       <div>
-        <label className="block text-xs font-semibold text-[#8B949E] uppercase tracking-wider mb-2">
+        <label className="block text-[10px] font-semibold text-[#9A8A78] uppercase tracking-brand mb-2">
           Genre
         </label>
-        <div className="flex flex-col gap-1 max-h-64 overflow-y-auto pr-1">
+        <div className="flex flex-col gap-0.5 max-h-64 overflow-y-auto pr-1">
           <button
             onClick={() => onChange({ genre: '' })}
-            className={`text-left px-2.5 py-1.5 text-xs rounded transition-colors ${
+            className={`text-left px-2 py-1.5 text-[11px] uppercase tracking-wide transition-colors ${
               filters.genre === ''
-                ? 'bg-[#D4AF37]/20 text-[#D4AF37] font-semibold'
-                : 'text-[#8B949E] hover:text-[#E6EDF3] hover:bg-[#30363D]'
+                ? 'text-[#BF9840] font-semibold'
+                : 'text-[#9A8A78] hover:text-[#152740]'
             }`}
           >
             All Genres
@@ -123,10 +122,10 @@ export default function FilterBar({ filters, genres, totalCount, filteredCount, 
             <button
               key={g}
               onClick={() => onChange({ genre: g })}
-              className={`text-left px-2.5 py-1.5 text-xs rounded transition-colors ${
+              className={`text-left px-2 py-1.5 text-[11px] uppercase tracking-wide transition-colors ${
                 filters.genre === g
-                  ? 'bg-[#D4AF37]/20 text-[#D4AF37] font-semibold'
-                  : 'text-[#8B949E] hover:text-[#E6EDF3] hover:bg-[#30363D]'
+                  ? 'text-[#BF9840] font-semibold'
+                  : 'text-[#9A8A78] hover:text-[#152740]'
               }`}
             >
               {g}
@@ -136,9 +135,9 @@ export default function FilterBar({ filters, genres, totalCount, filteredCount, 
       </div>
 
       {/* Count */}
-      <div className="text-xs text-[#8B949E] border-t border-[#30363D] pt-4">
-        Showing <span className="text-[#D4AF37] font-semibold">{filteredCount}</span> of{' '}
-        <span className="font-semibold">{totalCount}</span> titles
+      <div className="text-[10px] text-[#9A8A78] border-t border-[#D4C8B8] pt-4 uppercase tracking-brand">
+        Showing <span className="text-[#BF9840] font-semibold">{filteredCount}</span> of{' '}
+        <span className="font-semibold text-[#152740]">{totalCount}</span> titles
       </div>
     </aside>
   );

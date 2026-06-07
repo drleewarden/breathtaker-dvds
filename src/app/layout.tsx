@@ -1,25 +1,29 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Raleway, Cormorant_Garamond } from 'next/font/google';
 import './globals.css';
 
-const inter = Inter({
+const raleway = Raleway({
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-raleway',
   display: 'swap',
+  weight: ['300', '400', '500', '600', '700'],
+});
+
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin'],
+  variable: '--font-cormorant',
+  display: 'swap',
+  weight: ['400', '500', '600'],
 });
 
 export const metadata: Metadata = {
-  title: 'DVD Library — Breathtaker Hotel Spa',
-  description: 'Browse our complimentary DVD collection. Available for in-house guests.',
+  title: 'DVD Library — Breathtaker Hotel & Spa',
+  description: 'Complimentary DVD collection for in-house guests. Mount Buller.',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={`${raleway.variable} ${cormorant.variable}`}>
       <body>{children}</body>
     </html>
   );
