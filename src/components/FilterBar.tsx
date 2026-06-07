@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import type { Filters, RatingFilter, Section } from '@/types';
 
 const RATINGS: RatingFilter[] = ['ALL', 'G', 'PG', 'M', 'MA15+'];
@@ -35,9 +36,12 @@ interface Props {
 }
 
 export default function FilterBar({ filters, genres, totalCount, filteredCount, onChange }: Props) {
-  return (
-    <aside className="flex flex-col gap-6 w-full lg:w-60 flex-shrink-0">
+  const [mobileOpen, setMobileOpen] = useState(false);
 
+  const hasActiveFilters = filters.search || filters.genre || filters.rating !== 'ALL';
+
+  const filterPanel = (
+    <div className="flex flex-col gap-6">
       {/* Search */}
       <div>
         <label className="block text-[10px] font-semibold text-[#9A8A78] uppercase tracking-brand mb-2">
@@ -56,32 +60,6 @@ export default function FilterBar({ filters, genres, totalCount, filteredCount, 
             onChange={(e) => onChange({ search: e.target.value })}
             className="w-full pl-9 pr-3 py-2 text-xs bg-white border border-[#D4C8B8] text-[#152740] placeholder-[#9A8A78] focus:outline-none focus:border-[#BF9840] transition-colors tracking-wide"
           />
-        </div>
-      </div>
-
-      {/* Section toggle */}
-      <div>
-        <label className="block text-[10px] font-semibold text-[#9A8A78] uppercase tracking-brand mb-2">
-          Section
-        </label>
-        <div className="flex border border-[#D4C8B8] overflow-hidden">
-          {SECTIONS.map(({ value, label }) => (
-            <button
-              key={value}
-              onClick={() => onChange({ section: value })}
-              className={`flex-1 py-2 text-[10px] font-semibold uppercase tracking-brand transition-colors ${
-                filters.section === value
-                  ? value === 'kids'
-                    ? 'bg-[#6680A8] text-white'
-                    : value === 'series'
-                    ? 'bg-[#7A6040] text-white'
-                    : 'bg-[#152740] text-[#BF9840]'
-                  : 'bg-white text-[#9A8A78] hover:text-[#152740]'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
         </div>
       </div>
 
@@ -110,7 +88,7 @@ export default function FilterBar({ filters, genres, totalCount, filteredCount, 
         <label className="block text-[10px] font-semibold text-[#9A8A78] uppercase tracking-brand mb-2">
           Genre
         </label>
-        <div className="flex flex-col gap-0.5 max-h-64 overflow-y-auto pr-1">
+        <div className="flex flex-col gap-0.5 max-h-52 overflow-y-auto pr-1">
           <button
             onClick={() => onChange({ genre: '' })}
             className={`text-left px-2 py-1.5 text-[11px] uppercase tracking-wide transition-colors ${
@@ -124,7 +102,7 @@ export default function FilterBar({ filters, genres, totalCount, filteredCount, 
           {genres.map((g) => (
             <button
               key={g}
-              onClick={() => onChange({ genre: g })}
+              onClick={() => { onChange({ genre: g }); setMobileOpen(false); }}
               className={`text-left px-2 py-1.5 text-[11px] uppercase tracking-wide transition-colors ${
                 filters.genre === g
                   ? 'text-[#BF9840] font-semibold'
@@ -142,6 +120,90 @@ export default function FilterBar({ filters, genres, totalCount, filteredCount, 
         Showing <span className="text-[#BF9840] font-semibold">{filteredCount}</span> of{' '}
         <span className="font-semibold text-[#152740]">{totalCount}</span> titles
       </div>
-    </aside>
+    </div>
+  );
+
+  return (
+    <>
+      {/* ── DESKTOP sidebar ── */}
+      <aside className="hidden lg:flex flex-col gap-6 w-60 flex-shrink-0">
+        {/* Section toggle */}
+        <div>
+          <label className="block text-[10px] font-semibold text-[#9A8A78] uppercase tracking-brand mb-2">
+            Section
+          </label>
+          <div className="flex border border-[#D4C8B8] overflow-hidden">
+            {SECTIONS.map(({ value, label }) => (
+              <button
+                key={value}
+                onClick={() => onChange({ section: value })}
+                className={`flex-1 py-2 text-[10px] font-semibold uppercase tracking-brand transition-colors ${
+                  filters.section === value
+                    ? value === 'kids'   ? 'bg-[#6680A8] text-white'
+                    : value === 'series' ? 'bg-[#7A6040] text-white'
+                    : 'bg-[#152740] text-[#BF9840]'
+                    : 'bg-white text-[#9A8A78] hover:text-[#152740]'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+        {filterPanel}
+      </aside>
+
+      {/* ── MOBILE controls ── */}
+      <div className="lg:hidden flex flex-col gap-3">
+        {/* Section toggle — always visible */}
+        <div className="flex border border-[#D4C8B8] overflow-hidden">
+          {SECTIONS.map(({ value, label }) => (
+            <button
+              key={value}
+              onClick={() => onChange({ section: value })}
+              className={`flex-1 py-2.5 text-[11px] font-semibold uppercase tracking-brand transition-colors ${
+                filters.section === value
+                  ? value === 'kids'   ? 'bg-[#6680A8] text-white'
+                  : value === 'series' ? 'bg-[#7A6040] text-white'
+                  : 'bg-[#152740] text-[#BF9840]'
+                  : 'bg-white text-[#9A8A78]'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {/* Filters toggle button */}
+        <button
+          onClick={() => setMobileOpen((o) => !o)}
+          className="flex items-center justify-between w-full px-4 py-2.5 bg-white border border-[#D4C8B8] text-[#152740] hover:border-[#BF9840] transition-colors"
+        >
+          <span className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-brand">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                d="M3 4h18M6 12h12M10 20h4" />
+            </svg>
+            Filters
+            {hasActiveFilters && (
+              <span className="w-1.5 h-1.5 rounded-full bg-[#BF9840] inline-block" />
+            )}
+          </span>
+          <svg
+            className={`w-4 h-4 text-[#9A8A78] transition-transform duration-200 ${mobileOpen ? 'rotate-180' : ''}`}
+            fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        {/* Collapsible panel */}
+        {mobileOpen && (
+          <div className="bg-white border border-[#D4C8B8] p-4">
+            {filterPanel}
+          </div>
+        )}
+      </div>
+    </>
   );
 }

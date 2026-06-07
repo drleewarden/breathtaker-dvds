@@ -154,9 +154,6 @@ export default function Home() {
           <p className="text-[10px] text-[#6680A8] uppercase tracking-brand">
             Mount Buller · DVD Library · For in-house guests only
           </p>
-          <p className="text-[10px] text-[#9A8A78] mt-3 italic" style={{ fontFamily: 'var(--font-cormorant), serif' }}>
-            &ldquo;Nothing great in the world has ever been accomplished without passion.&rdquo;
-          </p>
           <p className="text-[9px] text-[#4A5568] mt-4 uppercase tracking-brand">
             Created by{' '}
             <a href="https://creative-milk.com.au" target="_blank" rel="noopener noreferrer"
